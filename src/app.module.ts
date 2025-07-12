@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserModule } from './user/user.module';
-import { CompanyModule } from './company/company.module';
+import { ClientsModule } from './clients/clients.module';
+import { DealsModule } from './deals/deals.module';
 
 @Module({
   imports: [
@@ -16,9 +16,10 @@ import { CompanyModule } from './company/company.module';
       database: process.env.DB_NAME,
       autoLoadEntities: true,
       synchronize: true,
+      logging: true,
     }),
-    UserModule,
-    CompanyModule,
+    ClientsModule,
+    DealsModule,
   ],
 })
 export class AppModule {}
