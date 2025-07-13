@@ -5,11 +5,14 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Patch,
+  Delete,
 } from '@nestjs/common';
 import { ClientsService } from './clients.service';
 import { CreateClientDto } from './dto/create-client.dto';
 import { ApiTags, ApiBody, ApiResponse } from '@nestjs/swagger';
 import { ClientSummaryDto } from './dto/client-summary.dto';
+import { UpdateClientDto } from './dto/update-client.dto';
 
 @ApiTags('Clients')
 @Controller('clients')
@@ -36,5 +39,17 @@ export class ClientsController {
   @ApiResponse({ status: 200, description: 'Client summary with deals' })
   getSummary(@Param('id', ParseIntPipe) id: number): Promise<ClientSummaryDto> {
     return this.clientsService.getClientSummary(id);
+  }
+
+  // API: PATCH /clients/:id
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateClientDto: UpdateClientDto) {
+    return this.clientsService.update(+id, updateClientDto);
+  }
+
+  // API: DELETE /clients/:id
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.clientsService.remove(+id);
   }
 }

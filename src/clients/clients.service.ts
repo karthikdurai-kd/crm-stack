@@ -6,6 +6,7 @@ import { CreateClientDto } from './dto/create-client.dto';
 import { Deal } from 'src/deals/entities/deal.entity';
 import { ClientSummaryDto } from './dto/client-summary.dto';
 import { DealSummary } from './types';
+import { UpdateClientDto } from './dto/update-client.dto';
 
 @Injectable()
 export class ClientsService {
@@ -55,5 +56,26 @@ export class ClientsService {
       Number(count),
       Number(total),
     );
+  }
+
+  // Update client
+  async update(id: number, updateClientDto: UpdateClientDto): Promise<Client> {
+    const client = await this.clientRepo.preload({
+      id: id,
+      ...updateClientDto,
+    });
+    if (!client) {
+      throw new NotFoundException(`Client with ID ${id} not found`);
+    }
+    return this.clientRepo.save(client);
+  }
+
+  // Delete client
+  async remove(id: number): Promise<void> {
+    const client = await this.clientRepo.findOne({ where: { id } });
+    if (!client) {
+      throw new NotFoundException(`Client with ID ${id} not found`);
+    }
+    await this.clientRepo.remove(client);
   }
 }
