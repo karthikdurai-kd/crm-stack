@@ -9,10 +9,10 @@ import {
   Patch,
 } from '@nestjs/common';
 import { NotesService } from './notes.service';
-import { CreateNoteDto } from './dto/create-note.dto';
+import { CreateNoteRequestDto } from './dto/request/create-note.request.dto';
 import { ApiTags, ApiBody, ApiResponse, ApiQuery } from '@nestjs/swagger';
 import { Note } from './entities/note.entity';
-import { UpdateNoteDto } from './dto/update-note.dto';
+import { UpdateNoteRequestDto } from './dto/request/update-note.request.dto';
 
 @ApiTags('Notes')
 @Controller('notes')
@@ -21,9 +21,9 @@ export class NotesController {
 
   // API: POST /notes
   @Post()
-  @ApiBody({ type: CreateNoteDto })
+  @ApiBody({ type: CreateNoteRequestDto })
   @ApiResponse({ status: 201, description: 'Note created' })
-  create(@Body() dto: CreateNoteDto): Promise<Note> {
+  create(@Body() dto: CreateNoteRequestDto): Promise<Note> {
     return this.notesService.create(dto);
   }
 
@@ -37,9 +37,9 @@ export class NotesController {
 
   // API: PATCH /notes/:id
   @Patch(':id')
-  @ApiBody({ type: UpdateNoteDto })
+  @ApiBody({ type: UpdateNoteRequestDto })
   @ApiResponse({ status: 200, description: 'Note updated' })
-  update(@Param('id') id: string, @Body() updateNoteDto: UpdateNoteDto) {
+  update(@Param('id') id: string, @Body() updateNoteDto: UpdateNoteRequestDto) {
     return this.notesService.update(+id, updateNoteDto);
   }
 

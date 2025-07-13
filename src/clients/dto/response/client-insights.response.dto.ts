@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Client } from '../entities/client.entity';
+import { Client } from '../../entities/client.entity';
 import { Note } from 'src/notes/entities/note.entity';
 
 export class DealStageStat {

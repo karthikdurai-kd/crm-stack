@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsOptional } from 'class-validator';
 
-export class CreateClientDto {
+export class CreateClientRequestDto {
   @ApiProperty({
     example: 'Apple Inc.',
     description: 'Name of the client company',

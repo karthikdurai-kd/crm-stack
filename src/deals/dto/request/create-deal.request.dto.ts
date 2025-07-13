@@ -1,8 +1,8 @@
 import { IsString, IsNumber, IsNotEmpty, IsEnum } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { DealStatus } from '../../shared/types';
+import { DealStatus } from '../../../shared/types';
 
-export class CreateDealDto {
+export class CreateDealRequestDto {
   @ApiProperty({ example: 'Deal 1', description: 'Deal title' })
   @IsString()
   @IsNotEmpty()

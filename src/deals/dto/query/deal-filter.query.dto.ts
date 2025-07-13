@@ -1,6 +1,6 @@
 import { IsOptional, IsNumberString, IsEnum } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { DealStatus } from '../../shared/types';
+import { DealStatus } from '../../../shared/types';
 
 export enum SortOption {
   AMOUNT_ASC = 'amount_asc',
@@ -9,7 +9,7 @@ export enum SortOption {
   CREATED_AT_DESC = 'createdAt_desc',
 }
 
-export class DealFilterDto {
+export class DealFilterQueryDto {
   @ApiPropertyOptional({
     enum: DealStatus,
     example: DealStatus.PENDING,

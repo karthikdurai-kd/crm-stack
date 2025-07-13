@@ -9,11 +9,11 @@ import {
   Query,
 } from '@nestjs/common';
 import { DealsService } from './deals.service';
-import { CreateDealDto } from './dto/create-deal.dto';
+import { CreateDealRequestDto } from './dto/request/create-deal.request.dto';
 import { Deal } from './entities/deal.entity';
-import { UpdateDealDto } from './dto/update-deal.dto';
+import { UpdateDealRequestDto } from './dto/request/update-deal.request.dto';
 import { ApiBody, ApiQuery, ApiResponse } from '@nestjs/swagger';
-import { DealFilterDto } from './dto/deal-filter.dto';
+import { DealFilterQueryDto } from './dto/query/deal-filter.query.dto';
 
 @Controller('deals')
 export class DealsController {
@@ -21,9 +21,9 @@ export class DealsController {
 
   // API: POST /deals
   @Post()
-  @ApiBody({ type: CreateDealDto })
+  @ApiBody({ type: CreateDealRequestDto })
   @ApiResponse({ status: 201, description: 'Deal created' })
-  create(@Body() dto: CreateDealDto): Promise<Deal> {
+  create(@Body() dto: CreateDealRequestDto): Promise<Deal> {
     return this.dealsService.create(dto);
   }
 
@@ -36,9 +36,9 @@ export class DealsController {
 
   // API: PATCH /deals/:id
   @Patch(':id')
-  @ApiBody({ type: UpdateDealDto })
+  @ApiBody({ type: UpdateDealRequestDto })
   @ApiResponse({ status: 200, description: 'Deal updated' })
-  update(@Param('id') id: string, @Body() updateDealDto: UpdateDealDto) {
+  update(@Param('id') id: string, @Body() updateDealDto: UpdateDealRequestDto) {
     return this.dealsService.update(+id, updateDealDto);
   }
 
@@ -50,9 +50,9 @@ export class DealsController {
   }
 
   @Get('filter')
-  @ApiQuery({ type: DealFilterDto })
+  @ApiQuery({ type: DealFilterQueryDto })
   @ApiResponse({ status: 200, description: 'List all deals filtered' })
-  findAllFiltered(@Query() filterDto: DealFilterDto): Promise<Deal[]> {
+  findAllFiltered(@Query() filterDto: DealFilterQueryDto): Promise<Deal[]> {
     return this.dealsService.findAllFiltered(filterDto);
   }
 }

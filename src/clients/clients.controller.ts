@@ -9,10 +9,10 @@ import {
   Delete,
 } from '@nestjs/common';
 import { ClientsService } from './clients.service';
-import { CreateClientDto } from './dto/create-client.dto';
+import { CreateClientRequestDto } from './dto/request/create-client.request.dto';
 import { ApiTags, ApiBody, ApiResponse } from '@nestjs/swagger';
-import { ClientInsightsDto } from './dto/client-insights.dto';
-import { UpdateClientDto } from './dto/update-client.dto';
+import { ClientInsightsDto } from './dto/response/client-insights.response.dto';
+import { UpdateClientRequestDto } from './dto/request/update-client.request.dto';
 
 @ApiTags('Clients')
 @Controller('clients')
@@ -21,9 +21,9 @@ export class ClientsController {
 
   // API: POST /clients
   @Post()
-  @ApiBody({ type: CreateClientDto })
+  @ApiBody({ type: CreateClientRequestDto })
   @ApiResponse({ status: 201, description: 'Client created' })
-  create(@Body() dto: CreateClientDto) {
+  create(@Body() dto: CreateClientRequestDto) {
     return this.clientsService.create(dto);
   }
 
@@ -49,9 +49,12 @@ export class ClientsController {
 
   // API: PATCH /clients/:id
   @Patch(':id')
-  @ApiBody({ type: UpdateClientDto })
+  @ApiBody({ type: UpdateClientRequestDto })
   @ApiResponse({ status: 200, description: 'Client updated' })
-  update(@Param('id') id: string, @Body() updateClientDto: UpdateClientDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateClientDto: UpdateClientRequestDto,
+  ) {
     return this.clientsService.update(+id, updateClientDto);
   }
 

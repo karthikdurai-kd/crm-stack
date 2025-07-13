@@ -2,10 +2,10 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Client } from './entities/client.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateClientDto } from './dto/create-client.dto';
+import { CreateClientRequestDto } from './dto/request/create-client.request.dto';
 import { Deal } from 'src/deals/entities/deal.entity';
-import { ClientInsightsDto } from './dto/client-insights.dto';
-import { UpdateClientDto } from './dto/update-client.dto';
+import { ClientInsightsDto } from './dto/response/client-insights.response.dto';
+import { UpdateClientRequestDto } from './dto/request/update-client.request.dto';
 import { Note } from 'src/notes/entities/note.entity';
 import { DealStageStat, DealSummary } from './types';
 
@@ -23,7 +23,7 @@ export class ClientsService {
   ) {}
 
   // create a client
-  create(createClientDto: CreateClientDto): Promise<Client> {
+  create(createClientDto: CreateClientRequestDto): Promise<Client> {
     const client = this.clientRepo.create(createClientDto);
     return this.clientRepo.save(client);
   }
@@ -75,7 +75,10 @@ export class ClientsService {
   }
 
   // Update client
-  async update(id: number, updateClientDto: UpdateClientDto): Promise<Client> {
+  async update(
+    id: number,
+    updateClientDto: UpdateClientRequestDto,
+  ): Promise<Client> {
     const client = await this.clientRepo.preload({
       id: id,
       ...updateClientDto,

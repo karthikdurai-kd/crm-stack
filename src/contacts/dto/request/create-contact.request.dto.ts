@@ -7,7 +7,7 @@ import {
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateContactDto {
+export class CreateContactRequestDto {
   @ApiProperty({ example: 'John Doe', description: 'Contact name' })
   @IsString()
   @IsNotEmpty()

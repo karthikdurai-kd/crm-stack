@@ -8,10 +8,10 @@ import {
   Param,
 } from '@nestjs/common';
 import { ContactsService } from './contacts.service';
-import { CreateContactDto } from './dto/create-contact.dto';
+import { CreateContactRequestDto } from './dto/request/create-contact.request.dto';
 import { ApiTags, ApiBody, ApiResponse } from '@nestjs/swagger';
 import { Contact } from './entities/contact.entity';
-import { UpdateContactDto } from './dto/update-contact.dto';
+import { UpdateContactRequestDto } from './dto/request/update-contact.request.dto';
 
 @ApiTags('Contacts')
 @Controller('contacts')
@@ -20,9 +20,9 @@ export class ContactsController {
 
   // API: POST /contacts
   @Post()
-  @ApiBody({ type: CreateContactDto })
+  @ApiBody({ type: CreateContactRequestDto })
   @ApiResponse({ status: 201, description: 'Contact created' })
-  create(@Body() dto: CreateContactDto): Promise<Contact> {
+  create(@Body() dto: CreateContactRequestDto): Promise<Contact> {
     return this.contactsService.create(dto);
   }
 
@@ -35,9 +35,12 @@ export class ContactsController {
 
   // API: PATCH /contacts/:id
   @Patch(':id')
-  @ApiBody({ type: UpdateContactDto })
+  @ApiBody({ type: UpdateContactRequestDto })
   @ApiResponse({ status: 200, description: 'Contact updated' })
-  update(@Param('id') id: string, @Body() updateContactDto: UpdateContactDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateContactDto: UpdateContactRequestDto,
+  ) {
     return this.contactsService.update(+id, updateContactDto);
   }
 

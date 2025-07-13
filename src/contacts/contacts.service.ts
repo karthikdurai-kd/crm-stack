@@ -2,9 +2,9 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Contact } from './entities/contact.entity';
 import { Repository } from 'typeorm';
-import { CreateContactDto } from './dto/create-contact.dto';
+import { CreateContactRequestDto } from './dto/request/create-contact.request.dto';
 import { Client } from '../clients/entities/client.entity';
-import { UpdateContactDto } from './dto/update-contact.dto';
+import { UpdateContactRequestDto } from './dto/request/update-contact.request.dto';
 
 @Injectable()
 export class ContactsService {
@@ -17,7 +17,7 @@ export class ContactsService {
   ) {}
 
   // Create contact
-  async create(dto: CreateContactDto) {
+  async create(dto: CreateContactRequestDto) {
     const client = await this.clientRepo.findOneBy({ id: dto.clientId });
     if (!client) {
       throw new NotFoundException('Client not found');
@@ -41,7 +41,7 @@ export class ContactsService {
   // Update contact
   async update(
     id: number,
-    updateContactDto: UpdateContactDto,
+    updateContactDto: UpdateContactRequestDto,
   ): Promise<Contact> {
     const contact = await this.contactRepo.preload({
       id,

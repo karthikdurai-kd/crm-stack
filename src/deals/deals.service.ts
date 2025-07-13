@@ -2,10 +2,13 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Deal } from './entities/deal.entity';
 import { Repository } from 'typeorm';
-import { CreateDealDto } from './dto/create-deal.dto';
 import { Client } from '../clients/entities/client.entity';
-import { UpdateDealDto } from './dto/update-deal.dto';
-import { DealFilterDto, SortOption } from './dto/deal-filter.dto';
+import {
+  DealFilterQueryDto,
+  SortOption,
+} from './dto/query/deal-filter.query.dto';
+import { CreateDealRequestDto } from './dto/request/create-deal.request.dto';
+import { UpdateDealRequestDto } from './dto/request/update-deal.request.dto';
 
 @Injectable()
 export class DealsService {
@@ -17,7 +20,7 @@ export class DealsService {
   ) {}
 
   // Create deal
-  async create(dto: CreateDealDto) {
+  async create(dto: CreateDealRequestDto) {
     const client = await this.clientRepo.findOneBy({ id: dto.clientId });
     if (!client) {
       throw new NotFoundException('Client not found');
@@ -35,7 +38,7 @@ export class DealsService {
   }
 
   // Update deal
-  async update(id: number, updateDealDto: UpdateDealDto): Promise<Deal> {
+  async update(id: number, updateDealDto: UpdateDealRequestDto): Promise<Deal> {
     const deal = await this.dealRepo.preload({
       id: id,
       ...updateDealDto,
@@ -55,7 +58,7 @@ export class DealsService {
     await this.dealRepo.remove(deal);
   }
 
-  async findAllFiltered(filterDto: DealFilterDto): Promise<Deal[]> {
+  async findAllFiltered(filterDto: DealFilterQueryDto): Promise<Deal[]> {
     const { status, minAmount, maxAmount, sort } = filterDto;
 
     const query = this.dealRepo.createQueryBuilder('deal');
