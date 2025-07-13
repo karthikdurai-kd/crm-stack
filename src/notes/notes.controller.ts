@@ -37,6 +37,7 @@ export class NotesController {
 
   // API: PATCH /notes/:id
   @Patch(':id')
+  @ApiBody({ type: UpdateNoteDto })
   @ApiResponse({ status: 200, description: 'Note updated' })
   update(@Param('id') id: string, @Body() updateNoteDto: UpdateNoteDto) {
     return this.notesService.update(+id, updateNoteDto);

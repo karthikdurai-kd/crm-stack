@@ -1,18 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class ClientResponseDto {
-  @ApiProperty()
+  @ApiProperty({ example: 1 })
   id: number;
 
-  @ApiProperty()
+  @ApiProperty({ example: 'Apple Inc.' })
   companyName: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 'Technology' })
   industry: string;
 
-  @ApiProperty({ required: false })
+  @ApiProperty({ example: 'Cupertino', required: false })
   city?: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: '2021-01-01' })
   createdAt: Date;
 }

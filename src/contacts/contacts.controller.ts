@@ -35,6 +35,7 @@ export class ContactsController {
 
   // API: PATCH /contacts/:id
   @Patch(':id')
+  @ApiBody({ type: UpdateContactDto })
   @ApiResponse({ status: 200, description: 'Contact updated' })
   update(@Param('id') id: string, @Body() updateContactDto: UpdateContactDto) {
     return this.contactsService.update(+id, updateContactDto);

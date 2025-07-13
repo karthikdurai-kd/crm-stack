@@ -3,33 +3,39 @@ import { Client } from '../entities/client.entity';
 import { Note } from 'src/notes/entities/note.entity';
 
 export class DealStageStat {
-  @ApiProperty()
+  @ApiProperty({ example: 'pending' })
   status: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 10 })
   count: number;
 }
 
 export class ClientInsightsDto {
-  @ApiProperty()
+  @ApiProperty({ example: 1 })
   clientId: number;
 
-  @ApiProperty()
+  @ApiProperty({ example: 'Apple Inc.' })
   companyName: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 10 })
   totalDeals: number;
 
-  @ApiProperty()
+  @ApiProperty({ example: 100000 })
   totalDealAmount: number;
 
-  @ApiProperty()
+  @ApiProperty({ example: '2021-01-01' })
   lastContactDate: string;
 
-  @ApiProperty({ type: [String] })
+  @ApiProperty({ type: [String], example: ['Note 1', 'Note 2'] })
   recentNotes: string[];
 
-  @ApiProperty({ type: [DealStageStat] })
+  @ApiProperty({
+    type: [DealStageStat],
+    example: [
+      { status: 'pending', count: 10 },
+      { status: 'in_progress', count: 20 },
+    ],
+  })
   dealsByStage: DealStageStat[];
 
   static fromEntity(

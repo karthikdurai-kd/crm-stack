@@ -8,6 +8,8 @@ import {
 } from 'typeorm';
 import { Client } from '../../clients/entities/client.entity';
 import { Note } from '../../notes/entities/note.entity';
+import { DealStatus } from '../../shared/types';
+import { IsEnum } from 'class-validator';
 
 @Entity()
 export class Deal {
@@ -20,8 +22,9 @@ export class Deal {
   @Column()
   amount: number;
 
-  @Column()
-  status: string;
+  @Column({ type: 'enum', enum: DealStatus })
+  @IsEnum(DealStatus)
+  status: DealStatus;
 
   @CreateDateColumn()
   createdAt: Date;

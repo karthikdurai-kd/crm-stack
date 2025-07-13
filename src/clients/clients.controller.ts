@@ -36,7 +36,11 @@ export class ClientsController {
 
   // API: GET /clients/:id/summary
   @Get(':id/summary')
-  @ApiResponse({ status: 200, description: 'Client summary with deals' })
+  @ApiResponse({
+    status: 200,
+    description: 'Client summary with deals',
+    type: ClientInsightsDto,
+  })
   getSummary(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<ClientInsightsDto> {
@@ -45,12 +49,15 @@ export class ClientsController {
 
   // API: PATCH /clients/:id
   @Patch(':id')
+  @ApiBody({ type: UpdateClientDto })
+  @ApiResponse({ status: 200, description: 'Client updated' })
   update(@Param('id') id: string, @Body() updateClientDto: UpdateClientDto) {
     return this.clientsService.update(+id, updateClientDto);
   }
 
   // API: DELETE /clients/:id
   @Delete(':id')
+  @ApiResponse({ status: 200, description: 'Client deleted' })
   remove(@Param('id') id: string) {
     return this.clientsService.remove(+id);
   }

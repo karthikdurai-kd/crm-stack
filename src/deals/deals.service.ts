@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { CreateDealDto } from './dto/create-deal.dto';
 import { Client } from '../clients/entities/client.entity';
 import { UpdateDealDto } from './dto/update-deal.dto';
+import { DealFilterDto, SortOption } from './dto/deal-filter.dto';
 
 @Injectable()
 export class DealsService {
@@ -52,5 +53,50 @@ export class DealsService {
       throw new NotFoundException(`Deal with ID ${id} not found`);
     }
     await this.dealRepo.remove(deal);
+  }
+
+  async findAllFiltered(filterDto: DealFilterDto): Promise<Deal[]> {
+    const { status, minAmount, maxAmount, sort } = filterDto;
+
+    const query = this.dealRepo.createQueryBuilder('deal');
+
+    // Filter by status
+    if (status) {
+      query.andWhere('deal.status = :status', { status });
+    }
+
+    // Filter by min amount
+    if (minAmount) {
+      query.andWhere('deal.amount >= :minAmount', {
+        minAmount: Number(minAmount),
+      });
+    }
+
+    // Filter by max amount
+    if (maxAmount) {
+      query.andWhere('deal.amount <= :maxAmount', {
+        maxAmount: Number(maxAmount),
+      });
+    }
+
+    // Sort by amount or createdAt
+    switch (sort) {
+      case SortOption.AMOUNT_ASC:
+        query.orderBy('deal.amount', 'ASC');
+        break;
+      case SortOption.AMOUNT_DESC:
+        query.orderBy('deal.amount', 'DESC');
+        break;
+      case SortOption.CREATED_AT_ASC:
+        query.orderBy('deal.createdAt', 'ASC');
+        break;
+      case SortOption.CREATED_AT_DESC:
+        query.orderBy('deal.createdAt', 'DESC');
+        break;
+      default:
+        query.orderBy('deal.createdAt', 'DESC');
+    }
+
+    return query.getMany();
   }
 }
