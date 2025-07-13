@@ -4,9 +4,10 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateClientDto } from './dto/create-client.dto';
 import { Deal } from 'src/deals/entities/deal.entity';
-import { ClientSummaryDto } from './dto/client-summary.dto';
-import { DealSummary } from './types';
+import { ClientInsightsDto } from './dto/client-insights.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
+import { Note } from 'src/notes/entities/note.entity';
+import { DealStageStat, DealSummary } from './types';
 
 @Injectable()
 export class ClientsService {
@@ -16,6 +17,9 @@ export class ClientsService {
 
     @InjectRepository(Deal)
     private dealRepo: Repository<Deal>,
+
+    @InjectRepository(Note)
+    private noteRepo: Repository<Note>,
   ) {}
 
   // create a client
@@ -29,13 +33,11 @@ export class ClientsService {
     return this.clientRepo.find();
   }
 
-  // get client summary
-  async getClientSummary(clientId: number): Promise<ClientSummaryDto> {
+  // get client insights
+  async getClientInsights(clientId: number): Promise<ClientInsightsDto> {
     const client = await this.clientRepo.findOne({ where: { id: clientId } });
-
-    if (!client) {
+    if (!client)
       throw new NotFoundException(`Client with ID ${clientId} not found`);
-    }
 
     const { count, total }: DealSummary = (await this.dealRepo
       .createQueryBuilder('deal')
@@ -44,17 +46,31 @@ export class ClientsService {
       .where('deal.clientId = :clientId', { clientId })
       .getRawOne()) || { count: 0, total: 0 };
 
-    const recentDeals = await this.dealRepo.find({
-      where: { client: { id: clientId } },
+    const dealsByStage: DealStageStat[] = await this.dealRepo
+      .createQueryBuilder('deal')
+      .select('deal.status', 'status')
+      .addSelect('COUNT(*)', 'count')
+      .where('deal.clientId = :clientId', { clientId })
+      .groupBy('deal.status')
+      .getRawMany();
+
+    const lastContact = await this.noteRepo.findOne({
+      where: { deal: { client: { id: clientId } } },
+      order: { createdAt: 'DESC' },
+    });
+
+    const recentNotes = await this.noteRepo.find({
+      where: { deal: { client: { id: clientId } } },
       order: { createdAt: 'DESC' },
       take: 2,
     });
 
-    return ClientSummaryDto.fromEntity(
+    return ClientInsightsDto.fromEntity(
       client,
-      recentDeals,
-      Number(count),
-      Number(total),
+      { count, total },
+      lastContact?.createdAt,
+      recentNotes,
+      dealsByStage,
     );
   }
 

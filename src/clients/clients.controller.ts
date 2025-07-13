@@ -11,7 +11,7 @@ import {
 import { ClientsService } from './clients.service';
 import { CreateClientDto } from './dto/create-client.dto';
 import { ApiTags, ApiBody, ApiResponse } from '@nestjs/swagger';
-import { ClientSummaryDto } from './dto/client-summary.dto';
+import { ClientInsightsDto } from './dto/client-insights.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
 
 @ApiTags('Clients')
@@ -37,8 +37,10 @@ export class ClientsController {
   // API: GET /clients/:id/summary
   @Get(':id/summary')
   @ApiResponse({ status: 200, description: 'Client summary with deals' })
-  getSummary(@Param('id', ParseIntPipe) id: number): Promise<ClientSummaryDto> {
-    return this.clientsService.getClientSummary(id);
+  getSummary(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<ClientInsightsDto> {
+    return this.clientsService.getClientInsights(id);
   }
 
   // API: PATCH /clients/:id
