@@ -13,6 +13,7 @@ import { CreateClientRequestDto } from './dto/request/create-client.request.dto'
 import { ApiTags, ApiBody, ApiResponse } from '@nestjs/swagger';
 import { ClientInsightsDto } from './dto/response/client-insights.response.dto';
 import { UpdateClientRequestDto } from './dto/request/update-client.request.dto';
+import { ClientMonthlyRevenueResponseDto } from './dto/response/client-monthly-revenue-response.dto';
 
 @ApiTags('Clients')
 @Controller('clients')
@@ -63,5 +64,17 @@ export class ClientsController {
   @ApiResponse({ status: 200, description: 'Client deleted' })
   remove(@Param('id') id: string) {
     return this.clientsService.remove(+id);
+  }
+
+  // API: GET /clients/:id/monthly-revenue
+  @Get(':id/monthly-revenue')
+  @ApiResponse({
+    status: 200,
+    type: [ClientMonthlyRevenueResponseDto],
+  })
+  getClientMonthlyRevenue(
+    @Param('id', ParseIntPipe) clientId: number,
+  ): Promise<ClientMonthlyRevenueResponseDto[]> {
+    return this.clientsService.getClientMonthlyRevenue(clientId);
   }
 }

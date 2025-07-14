@@ -8,6 +8,7 @@ import { ClientInsightsDto } from './dto/response/client-insights.response.dto';
 import { UpdateClientRequestDto } from './dto/request/update-client.request.dto';
 import { Note } from 'src/notes/entities/note.entity';
 import { DealStageStat, DealSummary } from './types';
+import { ClientMonthlyRevenueResponseDto } from './dto/response/client-monthly-revenue-response.dto';
 
 @Injectable()
 export class ClientsService {
@@ -96,5 +97,24 @@ export class ClientsService {
       throw new NotFoundException(`Client with ID ${id} not found`);
     }
     await this.clientRepo.remove(client);
+  }
+
+  // Get client monthly revenue
+  async getClientMonthlyRevenue(
+    clientId: number,
+  ): Promise<ClientMonthlyRevenueResponseDto[]> {
+    const result: ClientMonthlyRevenueResponseDto[] = await this.dealRepo
+      .createQueryBuilder('deal')
+      .select(`TO_CHAR(deal.createdAt, 'YYYY-MM')`, 'month')
+      .addSelect('SUM(deal.amount)', 'totalRevenue')
+      .where('deal.clientId = :clientId', { clientId })
+      .groupBy('month')
+      .orderBy('month', 'ASC')
+      .getRawMany();
+
+    return result.map((row) => ({
+      month: row.month,
+      totalRevenue: Number(row.totalRevenue),
+    }));
   }
 }
